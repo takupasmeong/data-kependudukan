@@ -56,6 +56,7 @@ void selamatdatang(){
 
 //functions
 void inputdata();
+void tampildata();
 void caridata();
 void perbaikidata();
 void hapusdata();
@@ -82,6 +83,8 @@ int main()
         fin = num;
         cout << fin << ". Input data" << endl;
         fin += num;
+        cout << fin << ". Tampil data" << endl;
+        fin += num;
         cout << fin << ". Cari data" << endl;
         fin += num;
         cout << fin << ". Perbaiki data" << endl;
@@ -98,15 +101,18 @@ int main()
         inputdata();
         break;
     case 2:
-        caridata();
+        tampildata();
         break;
     case 3:
-        perbaikidata();
+        caridata();
         break;
     case 4:
-        hapusdata();
+        perbaikidata();
         break;
     case 5:
+        hapusdata();
+        break;
+    case 6:
         exitprogram:
         cout<<"apakah anda ingin keluar (y/n) : ";
         cin>>keluarprogram;
@@ -180,6 +186,43 @@ void inputdata()
     else if (pilih == 'a' || pilih == 'A')
     {
         inputdata();
+    }
+    else
+    {
+        exit(0);
+    }
+}
+
+void tampildata()
+{
+    system("cls");
+
+    char pilih;
+
+    selamatdatang();
+    qstate = mysql_query(conn, "select * from data_penduduk");
+    if(!qstate)
+    {
+        res = mysql_store_result(conn);
+        printf("-------------------------------------------------------------------------------------------------------------\n");
+        printf("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s |\n", "nama", "NIK", "ttl", "kelurahan", "agama", "jenis kelamin");
+        printf("-------------------------------------------------------------------------------------------------------------\n");
+        while ((row = mysql_fetch_row(res)))
+        {
+            printf("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s |\n", row[1], row[2], row[3], row[4], row[5], row[6]);
+        }
+        printf("-------------------------------------------------------------------------------------------------------------\n");
+    }else
+    {
+        cout << "Query Execution Problem!" << mysql_errno(conn) << endl;
+    }
+
+    ExitMenu:
+    cout << "Press 'm' to Menu any other key to Exit: ";
+    cin >> pilih;
+    if (pilih == 'm' || pilih == 'M')
+    {
+        main();
     }
     else
     {
@@ -270,15 +313,14 @@ void perbaikidata()
     if (!qstate)
     {
         res = mysql_store_result(conn);
-        printf("-----------------------------------------------------------------------\n");
-        printf("| %-10s | %-20s | %-10s | %-10s | %-5s | \n", "Column Id", "Nama", "NIK", "TTL", "Kelurahan", "Agama");
+        printf("----------------------------------------------------------------------------------------------------------------------------\n");
+        printf("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s|\n", "kolom id", "nama", "NIK", "ttl", "kelurahan", "agama", "jenis kelamin");
+        printf("----------------------------------------------------------------------------------------------------------------------------\n");
         while ((row = mysql_fetch_row(res)))
         {
-            printf("| %-10s | %-20s | %-10s | %-10s | %-5s |\n", row[0], row[1], row[2], row[3], row[4], row[5]);
-            items[indexForId] = row[0];
-            indexForId++;
+            printf("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s|\n", row[0], row[1], row[2], row[3], row[4], row[5], row[6]);
         }
-        printf("-----------------------------------------------------------------------\n");
+        printf("----------------------------------------------------------------------------------------------------------------------------\n");
     }
     else
     {
