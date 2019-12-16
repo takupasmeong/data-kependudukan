@@ -11,7 +11,7 @@
 
 using namespace std;
 
-//Global Variable
+//Global Variable untuk deklarasi untuk MYSQL
 int qstate ;
 MYSQL* conn;
 MYSQL_ROW row;
@@ -34,6 +34,7 @@ public:
         else{
             cout << "Failed To Connect!" << mysql_errno(conn) << endl;
         }
+        //bagian ini untuk mengkoneksikan database dengan codeblock, localhost sebagai alamat, root dan "" sebagai username dan password pengguna, pengolahan_data sebagai database 
         conn = mysql_real_connect(conn, "localhost", "root", "", "pengolahan_data", 0, NULL, 0);
         if (conn)
         {
@@ -72,7 +73,7 @@ int main()
     // Call Methods End
 
     // Variables
-    int chooseOneFromMenu = 0;
+    int pilih = 0;
     char keluarprogram;
     int num = 1;
     int fin = 0;
@@ -91,12 +92,12 @@ int main()
         fin += num;
         cout << fin << ". Hapus data" << endl;
         fin += num;
-        cout << fin << ". Exit" << endl;
-        cout << "Choose One: ";
+        cout << fin << ". Keluar" << endl;
+        cout << "pilih : ";
     }
-    cin >> chooseOneFromMenu;
+    cin >> pilih;
 
-    switch(chooseOneFromMenu){
+    switch(pilih){
     case 1:
         inputdata();
         break;
@@ -170,7 +171,7 @@ void inputdata()
     qstate = mysql_query(conn, q);
     if (!qstate)
     {
-        cout << endl << "Successfully added in database." << endl;
+        cout << endl << "Berhasil dimasukkan dalam database..." << endl;
     }
     else
     {
@@ -203,15 +204,15 @@ void tampildata()
     qstate = mysql_query(conn, "select * from data_penduduk");
     if(!qstate)
     {
-        res = mysql_store_result(conn);
-        printf("-------------------------------------------------------------------------------------------------------------\n");
-        printf("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s |\n", "nama", "NIK", "ttl", "kelurahan", "agama", "jenis kelamin");
-        printf("-------------------------------------------------------------------------------------------------------------\n");
+       res = mysql_store_result(conn);
+        printf("--------------------------------------------------------------------------------------------------------------------------\n");
+        printf("| %-5s | %-15s | %-20s | %-15s | %-15s | %-15s | %-15s |\n", "id", "nama", "NIK", "tanggal lahir", "kelurahan", "agama", "jenis kelamin");
+        printf("--------------------------------------------------------------------------------------------------------------------------\n");
         while ((row = mysql_fetch_row(res)))
         {
-            printf("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s |\n", row[1], row[2], row[3], row[4], row[5], row[6]);
+            printf("| %-5s | %-15s | %-20s | %-15s | %-15s | %-15s | %-15s |\n", row[0], row[1], row[2], row[3], row[4], row[5], row[6]);
         }
-        printf("-------------------------------------------------------------------------------------------------------------\n");
+        printf("--------------------------------------------------------------------------------------------------------------------------\n");
     }else
     {
         cout << "Query Execution Problem!" << mysql_errno(conn) << endl;
@@ -440,22 +441,22 @@ void perbaikidata()
 
             if (!qstate)
             {
-                cout << endl << "Successfully Updated." << endl;
+                cout << endl << "Berhasil Memperbarui..." << endl;
             }
             else
             {
-                cout << "Failed To Update!" << mysql_errno(conn) << endl;
+                cout << "Gagal memperbarui data! error " << mysql_errno(conn) << endl;
             }
 
         }
         else
         {
-            cout << "Item Not Found in database." << endl;
+            cout << "Data tidak ditemukan di database." << endl;
         }
     }
 
     ExitMenu:
-    cout << "Press 'm' to Menu, 'e' to edit another item and any other key to Exit: ";
+    cout << "tekan 'm' untuk kembali ke Menu, 'e' untuk mengedit data lagi dan tekan sembarang untuk keluar : ";
     cin >> choose;
     if (choose == 'm' || choose == 'M')
     {
@@ -476,7 +477,7 @@ void hapusdata()
     system("cls");
 
     // Variables
-    char choose;
+    char pilih;
     int itemId;
     string items[5000];
     int indexForId = 0;
@@ -513,7 +514,7 @@ void hapusdata()
     }
     catch (exception e)
     {
-        cout << "Please Enter a valid NUMBER." << endl;
+        cout << "Masukan ID yang benar!." << endl;
         HaveException = true;
         goto ExitMenu;
     }
@@ -545,29 +546,29 @@ void hapusdata()
 
             if (!qstate)
             {
-                cout << "Successfully Deleted." << endl;
+                cout << "Berhasil Dihapus." << endl;
             }
             else
             {
-                cout << "Failed To Delete!" << mysql_errno(conn) << endl;
+                cout << "Gagal menghapus! error " << mysql_errno(conn) << endl;
             }
 
         }
         else
         {
-            cout << "Item Not Found in database." << endl;
+            cout << "Data tidak ditemukan di database." << endl;
         }
     }
 
     // Exit Code
     ExitMenu:
-    cout << "Press 'm' to Menu, 'd' to delete another item and any other key to Exit: ";
-    cin >> choose;
-    if (choose == 'm' || choose == 'M')
+    cout << "Tekan 'm' untuk kembali ke Menu, 'd' untuk menghapus data lagi dan tekan sembarang untuk keluar : ";
+    cin >> pilih;
+    if (pilih == 'm' || pilih == 'M')
     {
         main();
     }
-    else if (choose == 'd' || choose == 'D')
+    else if (pilih == 'd' || pilih == 'D')
     {
         hapusdata();
     }
