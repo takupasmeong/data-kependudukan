@@ -319,6 +319,8 @@ void perbaikidata()
         while ((row = mysql_fetch_row(res)))
         {
             printf("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s|\n", row[0], row[1], row[2], row[3], row[4], row[5], row[6]);
+            items[indexForId] = row[0];
+            indexForId++;
         }
         printf("------------------------------------------------------------------------------------------------------------------------------\n");
     }
@@ -339,6 +341,7 @@ void perbaikidata()
     {
         HaveException = true;
         cout << "tolong masukkan nomor yang benar." << endl;
+        goto ExitMenu;
     }
 
     if (HaveException == false)
