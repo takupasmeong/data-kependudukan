@@ -1,8 +1,6 @@
 #include<iostream>
 #include<cstdio>
 #include<sstream>
-#include<string>
-#include<cstdlib>
 #include<conio.h>
 #include<windows.h>
 #include<mysql.h>
@@ -58,6 +56,9 @@ void selamatdatang(){
 void inputdata();
 void tampildata();
 void caridata();
+void cariberdasarkannik();
+void cariberdasarkannama();
+void cariberdasarkankelurahan();
 void perbaikidata();
 void hapusdata();
 
@@ -237,46 +238,48 @@ void caridata()
     // Initial Load End
 
     // Variables
-    string input = "";
+    int input;
     char pilih;
     // Variables End
 
     selamatdatang();
-    cin.ignore(1, '\n');
-    cout << "Masukan NIK: ";
-    getline(cin, input);
-    string findbynik_query = "select * from data_penduduk where NIK like '%"+input+"%'";
-    const char* qn = findbynik_query.c_str();
-    qstate = mysql_query(conn, qn);
+    cout << "1. cari berdasarkan NIK" << endl;
+    cout << "2. cari berdasarkan Nama" << endl;
+    cout << "3. cari berdasarkan Kelurahan" << endl;
+    cout << "4. Exit" << endl;
+    cout << "pilih : ";
+    cin >> input;
 
-    cout << endl;
-    if (!qstate)
-    {
-        res = mysql_store_result(conn);
-        while ((row = mysql_fetch_row(res)))
+    switch(input){
+    case 1:
+        cariberdasarkannik();
+        break;
+    case 2:
+        cariberdasarkannama();
+        break;
+    case 3:
+        cariberdasarkankelurahan();
+        break;
+    case 4:
+        cout << "tekan 'm' untuk Menu atau tekan sembarang tombol untuk exit: ";
+        cin >> pilih;
+        if (pilih == 'm' || pilih == 'M')
         {
-            cout << "ID: " << row[0] << "\nNama: " << row[1] << "\nNIK: " << row[2] << "\nTanggal Lahir: " << row[3] << "\nKelurahan: " << row[4] << "\nAgama: " << row[5] << "\nJenis Kelamin: " << row[6] << endl << endl;
+            main();
         }
-    }
-    else
-    {
-        cout << "Query Execution Problem!" << mysql_errno(conn) << endl;
-    }
-
-    cout << "tekan 'm' untuk Menu dan 'a' untuk menginput data kembali atau tekan sembarang tombol untuk exit: ";
-    cin >> pilih;
-    if (pilih == 'm' || pilih == 'M')
-    {
-        main();
-    }
-    else if (pilih == 'a' || pilih == 'A')
-    {
+        else
+        {
+            exit(0);
+        }
+        break;
+    default:
+        cout << "pilih antara 1-4, tekan enter untuk melanjutkan....";
+        getch();
+        system("cls");
         caridata();
     }
-    else
-    {
-        exit(0);
-    }
+
+
 }
 
 void perbaikidata()
@@ -574,6 +577,153 @@ void hapusdata()
     else if (pilih == 'd' || pilih == 'D')
     {
         hapusdata();
+    }
+    else
+    {
+        exit(0);
+    }
+}
+
+void cariberdasarkannik()
+{
+     // Initial Load
+    system("cls");
+    // Initial Load End
+
+    // Variables
+    string input = "";
+    char pilih;
+    // Variables End
+
+    selamatdatang();
+    cin.ignore(1, '\n');
+    cout << "Masukan NIK: ";
+    getline(cin, input);
+    string findbynik_query = "select * from data_penduduk where NIK like '%"+input+"%'";
+    const char* qn = findbynik_query.c_str();
+    qstate = mysql_query(conn, qn);
+
+    cout << endl;
+    if (!qstate)
+    {
+        res = mysql_store_result(conn);
+        while ((row = mysql_fetch_row(res)))
+        {
+            cout << "ID: " << row[0] << "\nNama: " << row[1] << "\nNIK: " << row[2] << "\nTanggal Lahir: " << row[3] << "\nKelurahan: " << row[4] << "\nAgama: " << row[5] << "\nJenis Kelamin: " << row[6] << endl << endl;
+        }
+    }
+    else
+    {
+        cout << "Query Execution Problem!" << mysql_errno(conn) << endl;
+    }
+
+    cout << "tekan 'm' untuk Menu dan 'a' untuk menginput data kembali atau tekan sembarang tombol untuk exit: ";
+    cin >> pilih;
+    if (pilih == 'm' || pilih == 'M')
+    {
+        caridata();
+    }
+    else if (pilih == 'a' || pilih == 'A')
+    {
+        cariberdasarkannik();
+    }
+    else
+    {
+        exit(0);
+    }
+}
+
+void cariberdasarkannama()
+{
+     // Initial Load
+    system("cls");
+    // Initial Load End
+
+    // Variables
+    string input = "";
+    char pilih;
+    // Variables End
+
+    selamatdatang();
+    cin.ignore(1, '\n');
+    cout << "Masukan Nama: ";
+    getline(cin, input);
+    string findbynik_query = "select * from data_penduduk where nama like '%"+input+"%'";
+    const char* qn = findbynik_query.c_str();
+    qstate = mysql_query(conn, qn);
+
+    cout << endl;
+    if (!qstate)
+    {
+        res = mysql_store_result(conn);
+        while ((row = mysql_fetch_row(res)))
+        {
+            cout << "ID: " << row[0] << "\nNama: " << row[1] << "\nNIK: " << row[2] << "\nTanggal Lahir: " << row[3] << "\nKelurahan: " << row[4] << "\nAgama: " << row[5] << "\nJenis Kelamin: " << row[6] << endl << endl;
+        }
+    }
+    else
+    {
+        cout << "Query Execution Problem!" << mysql_errno(conn) << endl;
+    }
+
+    cout << "tekan 'm' untuk Menu dan 'a' untuk menginput data kembali atau tekan sembarang tombol untuk exit: ";
+    cin >> pilih;
+    if (pilih == 'm' || pilih == 'M')
+    {
+        caridata();
+    }
+    else if (pilih == 'a' || pilih == 'A')
+    {
+        cariberdasarkannama();
+    }
+    else
+    {
+        exit(0);
+    }
+}
+
+void cariberdasarkankelurahan()
+{
+     // Initial Load
+    system("cls");
+    // Initial Load End
+
+    // Variables
+    string input = "";
+    char pilih;
+    // Variables End
+
+    selamatdatang();
+    cin.ignore(1, '\n');
+    cout << "Masukan Nama: ";
+    getline(cin, input);
+    string findbynik_query = "select * from data_penduduk where kelurahan like '%"+input+"%'";
+    const char* qn = findbynik_query.c_str();
+    qstate = mysql_query(conn, qn);
+
+    cout << endl;
+    if (!qstate)
+    {
+        res = mysql_store_result(conn);
+        while ((row = mysql_fetch_row(res)))
+        {
+            cout << "ID: " << row[0] << "\nNama: " << row[1] << "\nNIK: " << row[2] << "\nTanggal Lahir: " << row[3] << "\nKelurahan: " << row[4] << "\nAgama: " << row[5] << "\nJenis Kelamin: " << row[6] << endl << endl;
+        }
+    }
+    else
+    {
+        cout << "Query Execution Problem!" << mysql_errno(conn) << endl;
+    }
+
+    cout << "tekan 'm' untuk Menu dan 'a' untuk menginput data kembali atau tekan sembarang tombol untuk exit: ";
+    cin >> pilih;
+    if (pilih == 'm' || pilih == 'M')
+    {
+        caridata();
+    }
+    else if (pilih == 'a' || pilih == 'A')
+    {
+        cariberdasarkankelurahan();
     }
     else
     {
