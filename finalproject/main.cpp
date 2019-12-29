@@ -8,7 +8,7 @@
 
 using namespace std;
 
-//Global Variable untuk deklarasi untuk MYSQL
+//Global Variable untuk deklarasi MYSQL
 int qstate ;
 MYSQL* conn;
 MYSQL_ROW row;
@@ -21,23 +21,13 @@ public:
     static void ConnectionFunction()
     {
         conn = mysql_init(0);
-        if (conn)
-        {
-            cout << "Database Connected" << endl;
-            cout << "Press any key to continue..." << endl;
-            // getch();
-            system("cls");
-        }
-        else{
-            cout << "Failed To Connect!" << mysql_errno(conn) << endl;
-        }
         //bagian ini untuk mengkoneksikan database dengan codeblock, localhost sebagai alamat, root dan "" sebagai username dan password pengguna, pengolahan_data sebagai database
         conn = mysql_real_connect(conn, "localhost", "root", "", "pengolahan_data", 0, NULL, 0);
         if (conn)
         {
             cout << "Database Connected To MySql" << conn << endl;
-            cout << "Press any key to continue..." << endl;
-            // getch();
+            cout << "Press any key to continue...";
+            getch();
             system("cls");
         }
         else{
@@ -48,7 +38,7 @@ public:
 
 //welcome functions
 void selamatdatang(){
-    cout<<"SELAMAT DATANG DI APLIKASI PENGOLAHAN DATA"<<endl<<endl;
+    cout<<"SELAMAT DATANG DI APLIKASI PENGOLAHAN DATA PENDUDUK"<<endl<<endl;
     cout<<"MENU"<<endl;
 }
 
@@ -695,7 +685,7 @@ void cariberdasarkankelurahan()
 
     selamatdatang();
     cin.ignore(1, '\n');
-    cout << "Masukan Nama: ";
+    cout << "Masukan Kelurahan: ";
     getline(cin, input);
     string findbynik_query = "select * from data_penduduk where kelurahan like '%"+input+"%'";
     const char* qn = findbynik_query.c_str();
