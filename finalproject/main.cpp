@@ -1,9 +1,6 @@
 #include<iostream>
 #include<cstdio>
-#include<fstream>
 #include<sstream>
-#include<string>
-#include<cstdlib>
 #include<conio.h>
 #include<windows.h>
 #include<mysql.h>
@@ -11,7 +8,7 @@
 
 using namespace std;
 
-//Global Variable untuk deklarasi untuk MYSQL
+//Global Variable untuk deklarasi MYSQL
 int qstate ;
 MYSQL* conn;
 MYSQL_ROW row;
@@ -24,34 +21,26 @@ public:
     static void ConnectionFunction()
     {
         conn = mysql_init(0);
-        if (conn)
-        {
-            cout << "Database Connected" << endl;
-            cout << "Press any key to continue..." << endl;
-            // getch();
-            system("cls");
-        }
-        else{
-            cout << "Failed To Connect!" << mysql_errno(conn) << endl;
-        }
-        //bagian ini untuk mengkoneksikan database dengan codeblock, localhost sebagai alamat, root dan "" sebagai username dan password pengguna, pengolahan_data sebagai database 
+        //bagian ini untuk mengkoneksikan database dengan codeblock, localhost sebagai alamat, root dan "" sebagai username dan password pengguna, pengolahan_data sebagai database
         conn = mysql_real_connect(conn, "localhost", "root", "", "pengolahan_data", 0, NULL, 0);
         if (conn)
         {
             cout << "Database Connected To MySql" << conn << endl;
-            cout << "Press any key to continue..." << endl;
-            // getch();
+            cout << "Press any key to continue...";
+            getch();
             system("cls");
         }
-        else{
+        else
+        {
             cout << "Failed To Connect!" << mysql_errno(conn) << endl;
-            }
+        }
     }
 };
 
 //welcome functions
-void selamatdatang(){
-    cout<<"SELAMAT DATANG DI APLIKASI PENGOLAHAN DATA"<<endl<<endl;
+void selamatdatang()
+{
+    cout<<"SELAMAT DATANG DI APLIKASI PENGOLAHAN DATA PENDUDUK"<<endl<<endl;
     cout<<"MENU"<<endl;
 }
 
@@ -59,6 +48,9 @@ void selamatdatang(){
 void inputdata();
 void tampildata();
 void caridata();
+void cariberdasarkannik();
+void cariberdasarkannama();
+void cariberdasarkankelurahan();
 void perbaikidata();
 void hapusdata();
 
@@ -80,7 +72,8 @@ int main()
     // Variables End
 
     selamatdatang();
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 1; i++)
+    {
         fin = num;
         cout << fin << ". Input data" << endl;
         fin += num;
@@ -97,7 +90,8 @@ int main()
     }
     cin >> pilih;
 
-    switch(pilih){
+    switch(pilih)
+    {
     case 1:
         inputdata();
         break;
@@ -114,15 +108,19 @@ int main()
         hapusdata();
         break;
     case 6:
-        exitprogram:
         cout<<"apakah anda ingin keluar (y/n) : ";
         cin>>keluarprogram;
-        if(keluarprogram == 'y' || keluarprogram == 'Y'){
+        if(keluarprogram == 'y' || keluarprogram == 'Y')
+        {
             return 0;
-        }else if(keluarprogram == 'n' || keluarprogram == 'N'){
+        }
+        else if(keluarprogram == 'n' || keluarprogram == 'N')
+        {
             system("cls");
             main();
-        }else{
+        }
+        else
+        {
             cout<<"pilih antara 'y' dan 'n'"<<endl;
         }
         break;
@@ -153,7 +151,7 @@ void inputdata()
     cin.ignore(1, '\n');
     cout<<"input nama : ";
     getline(cin, nama);
-    cout<<"input NIK : ";
+    cout<<"input NIK  : ";
     getline(cin, nik);
     cout<<"tanggal lahir (dd-mm-yyyy) : ";
     getline(cin, ttl);
@@ -204,21 +202,23 @@ void tampildata()
     qstate = mysql_query(conn, "select * from data_penduduk");
     if(!qstate)
     {
-       res = mysql_store_result(conn);
-        printf("--------------------------------------------------------------------------------------------------------------------------\n");
-        printf("| %-5s | %-15s | %-20s | %-15s | %-15s | %-15s | %-15s |\n", "id", "nama", "NIK", "tanggal lahir", "kelurahan", "agama", "jenis kelamin");
-        printf("--------------------------------------------------------------------------------------------------------------------------\n");
+        res = mysql_store_result(conn);
+        printf("----------------------------------------------------------------------------------------------------------------------\n");
+        printf("| %-5s | %-15s | %-16s | %-15s | %-15s | %-15s | %-15s |\n", "id", "nama", "NIK", "tanggal lahir", "kelurahan", "agama", "jenis kelamin");
+        printf("----------------------------------------------------------------------------------------------------------------------\n");
         while ((row = mysql_fetch_row(res)))
         {
-            printf("| %-5s | %-15s | %-20s | %-15s | %-15s | %-15s | %-15s |\n", row[0], row[1], row[2], row[3], row[4], row[5], row[6]);
+            printf("| %-5s | %-15s | %-16s | %-15s | %-15s | %-15s | %-15s |\n", row[0], row[1], row[2], row[3], row[4], row[5], row[6]);
         }
-        printf("--------------------------------------------------------------------------------------------------------------------------\n");
-    }else
+        printf("----------------------------------------------------------------------------------------------------------------------\n");
+    }
+    else
     {
         cout << "Query Execution Problem!" << mysql_errno(conn) << endl;
     }
 
-    ExitMenu:
+ExitMenu:
+    cout << endl;
     cout << "Press 'm' to Menu any other key to Exit: ";
     cin >> pilih;
     if (pilih == 'm' || pilih == 'M')
@@ -233,52 +233,54 @@ void tampildata()
 
 void caridata()
 {
-     // Initial Load
+    // Initial Load
     system("cls");
     // Initial Load End
 
     // Variables
-    string input = "";
+    int input;
     char pilih;
     // Variables End
 
     selamatdatang();
-    cin.ignore(1, '\n');
-    cout << "Masukan NIK: ";
-    getline(cin, input);
-    string findbynik_query = "select * from data_penduduk where NIK like '%"+input+"%'";
-    const char* qn = findbynik_query.c_str();
-    qstate = mysql_query(conn, qn);
+    cout << "1. cari berdasarkan NIK" << endl;
+    cout << "2. cari berdasarkan Nama" << endl;
+    cout << "3. cari berdasarkan Kelurahan" << endl;
+    cout << "4. Exit" << endl;
+    cout << "pilih : ";
+    cin >> input;
 
-    cout << endl;
-    if (!qstate)
+    switch(input)
     {
-        res = mysql_store_result(conn);
-        while ((row = mysql_fetch_row(res)))
+    case 1:
+        cariberdasarkannik();
+        break;
+    case 2:
+        cariberdasarkannama();
+        break;
+    case 3:
+        cariberdasarkankelurahan();
+        break;
+    case 4:
+        cout << "tekan 'm' untuk Menu atau tekan sembarang tombol untuk exit: ";
+        cin >> pilih;
+        if (pilih == 'm' || pilih == 'M')
         {
-            cout << "ID: " << row[0] << "\nNama: " << row[1] << "\nNIK: " << row[2] << "\nTanggal Lahir: " << row[3] << "\nKelurahan: " << row[4] << "\nAgama: " << row[5] << "\nJenis Kelamin: " << row[6] << endl << endl;
+            main();
         }
-    }
-    else
-    {
-        cout << "Query Execution Problem!" << mysql_errno(conn) << endl;
-    }
-
-    ExitMenu:
-    cout << "tekan 'm' untuk Menu dan 'a' untuk menginput data kembali atau tekan sembarang tombol untuk exit: ";
-    cin >> pilih;
-    if (pilih == 'm' || pilih == 'M')
-    {
-        main();
-    }
-    else if (pilih == 'a' || pilih == 'A')
-    {
+        else
+        {
+            exit(0);
+        }
+        break;
+    default:
+        cout << "pilih antara 1-4, tekan enter untuk melanjutkan....";
+        getch();
+        system("cls");
         caridata();
     }
-    else
-    {
-        exit(0);
-    }
+
+
 }
 
 void perbaikidata()
@@ -314,14 +316,16 @@ void perbaikidata()
     if (!qstate)
     {
         res = mysql_store_result(conn);
-        printf("----------------------------------------------------------------------------------------------------------------------------\n");
-        printf("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s|\n", "kolom id", "nama", "NIK", "ttl", "kelurahan", "agama", "jenis kelamin");
-        printf("----------------------------------------------------------------------------------------------------------------------------\n");
+        printf("---------------------------------------------------------------------------------------------------------------------\n");
+        printf("| %-5s | %-15s | %-16s | %-15s | %-15s | %-15s | %-15s|\n", "id", "nama", "NIK", "tanggal lahir", "kelurahan", "agama", "jenis kelamin");
+        printf("---------------------------------------------------------------------------------------------------------------------\n");
         while ((row = mysql_fetch_row(res)))
         {
-            printf("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s|\n", row[0], row[1], row[2], row[3], row[4], row[5], row[6]);
+            printf("| %-5s | %-15s | %-16s | %-15s | %-15s | %-15s | %-15s|\n", row[0], row[1], row[2], row[3], row[4], row[5], row[6]);
+            items[indexForId] = row[0];
+            indexForId++;
         }
-        printf("----------------------------------------------------------------------------------------------------------------------------\n");
+        printf("---------------------------------------------------------------------------------------------------------------------\n");
     }
     else
     {
@@ -331,14 +335,15 @@ void perbaikidata()
     try
     {
         cout << endl;
+        cout << "jika anda ingin kembali ke menu, tekan sembarang angka selain id di tabel " << endl;
         cout << "masukkan ID: ";
         cin >> itemId;
         cout << endl;
     }
     catch (exception e)
     {
-        cout << "tolong masukkan nomor yang benar." << endl;
         HaveException = true;
+        cout << "tolong masukkan nomor yang benar." << endl;
         goto ExitMenu;
     }
 
@@ -354,7 +359,8 @@ void perbaikidata()
             if (strid != items[i])
             {
                 NotInDatabase = true;
-            }else
+            }
+            else
             {
                 NotInDatabase = false;
                 break;
@@ -410,13 +416,13 @@ void perbaikidata()
             {
                 nik = storenik;
             }
-            cout << "Enter tanggal lahir (" << defaultString << "  to not change) (yyyy-mm-dd): ";
+            cout << "Enter tanggal lahir (" << defaultString << "  to not change): ";
             getline(cin, ttl);
             if (ttl == defaultString)
             {
                 ttl = storettl;
             }
-            cout << "Enter kelurahan (" << defaultString << "  to not change) (yyyy-mm-dd): ";
+            cout << "Enter kelurahan (" << defaultString << "  to not change): ";
             getline(cin, kelurahan);
             if (kelurahan == defaultString)
             {
@@ -432,7 +438,7 @@ void perbaikidata()
             getline(cin, jenis_kelamin);
             if (jenis_kelamin == defaultString)
             {
-                 jenis_kelamin = storejeniskelamin;
+                jenis_kelamin = storejeniskelamin;
             }
 
             string update_query = "update data_penduduk set nama = '"+nama+"', nik = '"+nik+"', ttl = '"+ttl+"', kelurahan = '"+kelurahan+"', agama = '"+agama+"', jenis_kelamin = '"+jenis_kelamin+"' where id = '"+strid+"'";
@@ -455,7 +461,7 @@ void perbaikidata()
         }
     }
 
-    ExitMenu:
+ExitMenu:
     cout << "tekan 'm' untuk kembali ke Menu, 'e' untuk mengedit data lagi dan tekan sembarang untuk keluar : ";
     cin >> choose;
     if (choose == 'm' || choose == 'M')
@@ -477,6 +483,7 @@ void hapusdata()
     system("cls");
 
     // Variables
+    char kembali;
     char pilih;
     int itemId;
     string items[5000];
@@ -489,16 +496,16 @@ void hapusdata()
     if (!qstate)
     {
         res = mysql_store_result(conn);
-        printf("----------------------------------------------------------\n");
-        printf("| %-10s | %-15s | %-10s | %-10s |\n", "Column Id", "Nama", "NIK", "Kelurahan");
-        printf("----------------------------------------------------------\n");
+        printf("--------------------------------------------------------------------\n");
+        printf("| %-10s | %-15s | %-20s | %-10s |\n", "Column Id", "Nama", "NIK", "Kelurahan");
+        printf("--------------------------------------------------------------------\n");
         while ((row = mysql_fetch_row(res)))
         {
-            printf("| %-10s | %-15s | %-10s | %-10s |\n", row[0], row[1], row[2], row[4]);
+            printf("| %-10s | %-15s | %-20s | %-10s |\n", row[0], row[1], row[2], row[4]);
             items[indexForId] = row[0];
             indexForId++;
         }
-        printf("----------------------------------------------------------\n");
+        printf("--------------------------------------------------------------------\n");
     }
     else
     {
@@ -508,6 +515,7 @@ void hapusdata()
     try
     {
         cout << endl;
+        cout << "jika anda ingin kembali ke menu, tekan sembarang angka selain id di tabel " << endl;
         cout << "masukan ID: ";
         cin >> itemId;
         cout << endl;
@@ -531,7 +539,8 @@ void hapusdata()
             if (strid != items[i])
             {
                 NotInDatabase = true;
-            }else
+            }
+            else
             {
                 NotInDatabase = false;
                 break;
@@ -561,7 +570,7 @@ void hapusdata()
     }
 
     // Exit Code
-    ExitMenu:
+ExitMenu:
     cout << "Tekan 'm' untuk kembali ke Menu, 'd' untuk menghapus data lagi dan tekan sembarang untuk keluar : ";
     cin >> pilih;
     if (pilih == 'm' || pilih == 'M')
@@ -578,3 +587,162 @@ void hapusdata()
     }
 }
 
+void cariberdasarkannik()
+{
+    // Initial Load
+    system("cls");
+    // Initial Load End
+
+    // Variables
+    string input = "";
+    char pilih;
+    // Variables End
+
+    selamatdatang();
+    cin.ignore(1, '\n');
+    cout << "Masukan NIK: ";
+    getline(cin, input);
+    string findbynik_query = "select * from data_penduduk where NIK like '%"+input+"%'";
+    const char* qn = findbynik_query.c_str();
+    qstate = mysql_query(conn, qn);
+
+    cout << endl;
+    if (!qstate)
+    {
+        res = mysql_store_result(conn);
+        printf("----------------------------------------------------------------------------------------------------------------------\n");
+        printf("| %-5s | %-15s | %-16s | %-15s | %-15s | %-15s | %-15s |\n", "id", "nama", "NIK", "tanggal lahir", "kelurahan", "agama", "jenis kelamin");
+        printf("----------------------------------------------------------------------------------------------------------------------\n");
+        while ((row = mysql_fetch_row(res)))
+        {
+            printf("| %-5s | %-15s | %-16s | %-15s | %-15s | %-15s | %-15s |\n", row[0], row[1], row[2], row[3], row[4], row[5], row[6]);
+        }
+        printf("----------------------------------------------------------------------------------------------------------------------\n");
+    }
+    else
+    {
+        cout << "Query Execution Problem!" << mysql_errno(conn) << endl;
+    }
+
+    cout << "tekan 'm' untuk Menu dan 'a' untuk menginput data kembali atau tekan sembarang tombol untuk exit: ";
+    cin >> pilih;
+    if (pilih == 'm' || pilih == 'M')
+    {
+        caridata();
+    }
+    else if (pilih == 'a' || pilih == 'A')
+    {
+        cariberdasarkannik();
+    }
+    else
+    {
+        exit(0);
+    }
+}
+
+void cariberdasarkannama()
+{
+    // Initial Load
+    system("cls");
+    // Initial Load End
+
+    // Variables
+    string input = "";
+    char pilih;
+    // Variables End
+
+    selamatdatang();
+    cin.ignore(1, '\n');
+    cout << "Masukan Nama: ";
+    getline(cin, input);
+    string findbynik_query = "select * from data_penduduk where nama like '%"+input+"%'";
+    const char* qn = findbynik_query.c_str();
+    qstate = mysql_query(conn, qn);
+
+    cout << endl;
+    if (!qstate)
+    {
+        res = mysql_store_result(conn);
+        printf("----------------------------------------------------------------------------------------------------------------------\n");
+        printf("| %-5s | %-15s | %-16s | %-15s | %-15s | %-15s | %-15s |\n", "id", "nama", "NIK", "tanggal lahir", "kelurahan", "agama", "jenis kelamin");
+        printf("----------------------------------------------------------------------------------------------------------------------\n");
+        while ((row = mysql_fetch_row(res)))
+        {
+            printf("| %-5s | %-15s | %-16s | %-15s | %-15s | %-15s | %-15s |\n", row[0], row[1], row[2], row[3], row[4], row[5], row[6]);
+        }
+        printf("----------------------------------------------------------------------------------------------------------------------\n");
+    }
+
+    else
+    {
+        cout << "Query Execution Problem!" << mysql_errno(conn) << endl;
+    }
+
+    cout << "tekan 'm' untuk Menu dan 'a' untuk menginput data kembali atau tekan sembarang tombol untuk exit: ";
+    cin >> pilih;
+    if (pilih == 'm' || pilih == 'M')
+    {
+        caridata();
+    }
+    else if (pilih == 'a' || pilih == 'A')
+    {
+        cariberdasarkannama();
+    }
+    else
+    {
+        exit(0);
+    }
+}
+
+void cariberdasarkankelurahan()
+{
+    // Initial Load
+    system("cls");
+    // Initial Load End
+
+    // Variables
+    string input = "";
+    char pilih;
+    // Variables End
+
+    selamatdatang();
+    cin.ignore(1, '\n');
+    cout << "Masukan Kelurahan: ";
+    getline(cin, input);
+    string findbynik_query = "select * from data_penduduk where kelurahan like '%"+input+"%'";
+    const char* qn = findbynik_query.c_str();
+    qstate = mysql_query(conn, qn);
+
+    cout << endl;
+    if (!qstate)
+    {
+        res = mysql_store_result(conn);
+        printf("----------------------------------------------------------------------------------------------------------------------\n");
+        printf("| %-5s | %-15s | %-16s | %-15s | %-15s | %-15s | %-15s |\n", "id", "nama", "NIK", "tanggal lahir", "kelurahan", "agama", "jenis kelamin");
+        printf("----------------------------------------------------------------------------------------------------------------------\n");
+        while ((row = mysql_fetch_row(res)))
+        {
+            printf("| %-5s | %-15s | %-16s | %-15s | %-15s | %-15s | %-15s |\n", row[0], row[1], row[2], row[3], row[4], row[5], row[6]);
+        }
+        printf("----------------------------------------------------------------------------------------------------------------------\n");
+    }
+    else
+    {
+        cout << "Query Execution Problem!" << mysql_errno(conn) << endl;
+    }
+
+    cout << "tekan 'm' untuk Menu dan 'a' untuk menginput data kembali atau tekan sembarang tombol untuk exit: ";
+    cin >> pilih;
+    if (pilih == 'm' || pilih == 'M')
+    {
+        caridata();
+    }
+    else if (pilih == 'a' || pilih == 'A')
+    {
+        cariberdasarkankelurahan();
+    }
+    else
+    {
+        exit(0);
+    }
+}
