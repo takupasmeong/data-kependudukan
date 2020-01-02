@@ -524,7 +524,6 @@ void hapusdata()
     }
     catch (exception e)
     {
-        cout << "Masukan ID yang benar!." << endl;
         HaveException = true;
         goto ExitMenu;
     }
