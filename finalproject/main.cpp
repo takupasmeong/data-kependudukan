@@ -175,7 +175,7 @@ void inputdata()
     }
     else
     {
-        cout << "Query Execution Problem!" << mysql_errno(conn) <<endl<< endl;
+        cout << "Gagal menyimpan data! error " << mysql_errno(conn) <<endl<< endl;
     }
     // Exit Code
     cout << "tekan 'm' untuk Menu dan 'a' untuk menginput data kembali atau tekan sembarang tombol untuk exit: ";
@@ -345,7 +345,6 @@ void perbaikidata()
     catch (exception e)
     {
         HaveException = true;
-        cout << "tolong masukkan nomor yang benar." << endl;
         goto ExitMenu;
     }
 
@@ -485,7 +484,6 @@ void hapusdata()
     system("cls");
 
     // Variables
-    char kembali;
     char pilih;
     int itemId;
     string items[5000];
